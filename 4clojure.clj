@@ -351,6 +351,7 @@
                  (first (take-last 2 remaining-triangle))
                  (min-pairs (last remaining-triangle) []))))))))
 
+;; An overly complicated solution
 (defn perfect-number-c?
   "Returns true if n is a perfect number. I.e. the sum of its divisors
    is equal to itself."
@@ -476,10 +477,17 @@
                     (recur remaining-n' v')
                     v')))))]
     (let [elements (into [] original-set)
-          zero-vector (into [] (map (constantly 0) elements))
-          binary-numbers (cons zero-vector (map (memoize #(binary-vector % zero-vector)) (range 1 (pow 2 (count elements)))))]
+          zero-vector
+          (into [] (map (constantly 0) elements))
+          binary-numbers
+          (cons
+           zero-vector
+           (map (memoize #(binary-vector % zero-vector))
+                (range 1 (pow 2 (count elements)))))]
       (set (for [number binary-numbers]
-                  (set (filter (comp not nil?) (map #(if (= (number %) 1) (elements %)) (range (count number))))))))))
+             (set (filter
+                   (comp not nil?)
+                   (map #(if (= (number %) 1) (elements %)) (range (count number))))))))))
 
 (defn happy-number?
   [n]
@@ -487,6 +495,37 @@
             [n n-seen]
             (if (or (= 1 n) (n-seen n))
               n
-              (let [n' (reduce + (map (comp #(* % %) #(Integer/parseInt %)) (map str (str n))))]
+              (let [n' (reduce + (map (comp
+                                       #(* % %)
+                                       #(Integer/parseInt %)) (map str (str n))))]
                 (happy n' (conj n-seen n)))))]
     (if (= 1 (happy n #{})) true false)))
+
+(defn symmetric-difference
+  [a b]
+  (let [union (into a b)]
+    (into (apply disj union a) (apply disj union b))))
+
+(defn graph-tour-possible?
+  [graph]
+  (letfn [(next-struct [current-struct next-idx]
+            (assoc current-struct
+                   0 (next-node (current-struct 0) (graph next-idx))
+                   1 (disj (current-struct 1) next-idx)
+                   2 (conj (current-struct 2) (graph next-idx))))
+          (next-node [last-node edge]
+            (cond (= last-node (first edge)) (second edge)
+                  (= last-node (second edge)) (first edge)
+                  :else nil))
+          (edge-struct [first-idx v]
+            (vector (v (- 1 first-idx)) (set (range 0 (count graph))) (list) (v first-idx) v))]
+    (let [first-queue (concat (map (partial edge-struct 0) graph) (map (partial edge-struct 1) graph))]
+      (loop [queue first-queue]
+        (let [current-struct (first queue)
+              possible? (and (empty? (current-struct 1))
+                             (= (current-struct 4) (vector (current-struct 0) (current-struct 3))))
+              queue-addition (remove #(nil? (first %))
+                                     (map (partial next-struct current-struct) (current-struct 1)))]
+          (if (or (= 1 (count queue)) possible?)
+            (or possible? (= 1 (count graph)))
+            (recur (if (seq queue-addition) (apply conj (rest queue) queue-addition) (rest queue)))))))))
