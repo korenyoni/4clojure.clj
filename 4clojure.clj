@@ -542,3 +542,15 @@
              (apply conj nodes (flatten edges-addition))
              (apply disj remaining-edges edges-addition))
       (empty? remaining-edges))))
+
+(defn roman-numerals
+  [string]
+  (let [subtracted {"IV" 4 "IX" 9 "XL" 40 "XC" 90 "CD" 400 "CM" 900}
+        values {"I" 1 "V" 5 "X" 10 "L" 50 "C" 100 "D" 500 "M" 1000}]
+    (loop [remaining-string string
+           sum 0]
+      (if-let [subtract (subtracted (apply str (take 2 remaining-string)))]
+        (recur (drop 2 remaining-string) (+ sum subtract))
+        (if (seq remaining-string)
+          (recur (rest remaining-string) (+ sum (values (str (first remaining-string)))))
+          sum)))))
