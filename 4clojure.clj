@@ -529,3 +529,16 @@
           (if (or (= 1 (count queue)) possible?)
             (or possible? (= 1 (count graph)))
             (recur (if (seq queue-addition) (apply conj (rest queue) queue-addition) (rest queue)))))))))
+
+(defn connected-graph?
+  [graph]
+  (loop [edges #{(first graph)}
+         nodes (set (first graph)) 
+         remaining-edges (disj graph (first graph))]
+    (if-let [edges-addition
+             (seq (remove nil? (map #(if (some identity (map nodes %)) %)
+                                    remaining-edges)))]
+      (recur (apply conj edges edges-addition)
+             (apply conj nodes (flatten edges-addition))
+             (apply disj remaining-edges edges-addition))
+      (empty? remaining-edges))))
