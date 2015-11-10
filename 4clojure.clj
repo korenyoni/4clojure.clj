@@ -562,3 +562,21 @@
     (if (every? (complement coll?) (apply concat flatten-level))
       flatten-level
       (recur flatten-level))))
+
+(defn game-of-life
+  [board]
+  (let [rows (count board)
+        columns (count (first board))
+        cell (fn [x y] (if (and (<= 0 x (dec columns))
+                               (<= 0 y (dec rows)))
+                        (nth (board y) x)))
+        neighbor-xy (list [0 -1] [0 1] [-1 0] [1 0] [-1 -1] [-1 1] [1 -1] [1 1])
+        neighbors (fn [x y]
+                    (map #(cell (+ x (% 0)) (+ y (% 1))) neighbor-xy))]
+    (->> (for [y (range 0 rows)
+               x (range 0 columns)]
+           (vector (cell x y) (count (filter #{\#} (neighbors x y)))))
+         (map #(if (or (and (= \# (% 0)) (<= 2 (% 1) 3))
+                       (and (= \space (% 0)) (= 3 (% 1)))) \# \space))
+         (partition columns)
+         (map #(apply str %)))))
