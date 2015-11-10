@@ -554,3 +554,11 @@
         (if (seq remaining-string)
           (recur (rest remaining-string) (+ sum (values (str (first remaining-string)))))
           sum)))))
+
+(defn partial-flatten
+  [coll]
+  (let [flatten-level
+        (apply concat (map (fn [e] (if (and (coll? e) (some coll? e)) e (list e))) coll))]
+    (if (every? (complement coll?) (apply concat flatten-level))
+      flatten-level
+      (recur flatten-level))))
