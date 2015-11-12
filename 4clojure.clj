@@ -580,3 +580,13 @@
                        (and (= \space (% 0)) (= 3 (% 1)))) \# \space))
          (partition columns)
          (map #(apply str %)))))
+
+(defn binary-tree?
+  [tree]
+  (letfn [(f [t parent]
+            (if (and (= 3 (count t)) (first t) (every? nil? (rest t)))
+              nil
+              (if (not= t parent)
+                (f (map #(if (sequential? %) (f % t) %) t) t)
+                false)))]
+    (and (sequential? tree) (not (nil? tree)) (nil? (f tree nil)))))
