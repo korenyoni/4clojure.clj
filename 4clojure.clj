@@ -600,3 +600,18 @@
   (if (and (first tree) (= 3 (count tree)))
     (and (next-fn (second tree)) (next-fn (last tree)))
     false)))
+
+(defn symmetrical-binary-tree?
+  [tree]
+  (letfn [(f [t]
+            (list
+             (first t)
+             (if (sequential? (second t))
+               (f (list (first (second t)) (last (second t)) (second (second t))))
+               (second t))
+             (if (sequential? (last t))
+               (f (list (first (last t)) (last (last t)) (second (last t))))
+               (last t))))]
+    (let [tree' (f tree)]
+      (= (second tree') (last tree'))
+      (and (= (second tree') (last tree)) (= (second tree) (last tree'))))))
