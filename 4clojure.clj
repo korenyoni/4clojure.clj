@@ -590,3 +590,13 @@
                 (f (map #(if (sequential? %) (f % t) %) t) t)
                 false)))]
     (and (sequential? tree) (not (nil? tree)) (nil? (f tree nil)))))
+
+;; another solution
+;; I was not used to using recursion in this way in Clojure yet:
+;; i.e. invoking a recursive function more than once in one expression other than map
+(defn binary-tree?
+  [tree]
+  (let [next-fn (fn [x] (or (nil? x) (and (sequential? x) (binary-tree? x))))]
+  (if (and (first tree) (= 3 (count tree)))
+    (and (next-fn (second tree)) (next-fn (last tree)))
+    false)))
