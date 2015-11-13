@@ -601,17 +601,16 @@
     (and (next-fn (second tree)) (next-fn (last tree)))
     false)))
 
+;; At first I did not use the form [v l r] in the arguments for f.
+;; At that point I was not used to binding parts of an argument
+;; to id's within the argument vector. This new function saved some lines of code.
 (defn symmetrical-binary-tree?
   [tree]
-  (letfn [(f [t]
+  (letfn [(f [[v l r]]
             (list
-             (first t)
-             (if (sequential? (second t))
-               (f (list (first (second t)) (last (second t)) (second (second t))))
-               (second t))
-             (if (sequential? (last t))
-               (f (list (first (last t)) (last (last t)) (second (last t))))
-               (last t))))]
+             v
+             (if (sequential? l) (f (list (first l) (last l) (second l))) l)
+             (if (sequential? r) (f (list (first r) (last r) (second r))) r)))]
     (let [tree' (f tree)]
       (= (second tree') (last tree'))
       (and (= (second tree') (last tree)) (= (second tree) (last tree'))))))
