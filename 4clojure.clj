@@ -614,3 +614,14 @@
     (let [tree' (f tree)]
       (= (second tree') (last tree'))
       (and (= (second tree') (last tree)) (= (second tree) (last tree'))))))
+
+(defn pascals-triangle
+  [n]
+  (letfn [(f [row rem-iterations]
+            (if (> rem-iterations 1)
+              (recur
+               (concat [1] (map
+                            #(+ (nth row %) (nth row (inc %)))
+                            (range 0 (dec (count row)))) [1]) (dec rem-iterations))
+              row))]
+    (f [1] n)))
