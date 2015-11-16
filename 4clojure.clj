@@ -629,3 +629,7 @@
 (defn equivilance-classes
   [f coll]
   (set (map set (vals (group-by f coll)))))
+
+(defn product-digits
+  [a b]
+  (mapv #(- (int %) 48) ((comp str *) a b)))
