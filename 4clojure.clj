@@ -625,3 +625,7 @@
                             (range 0 (dec (count row)))) [1]) (dec rem-iterations))
               row))]
     (f [1] n)))
+
+(defn equivilance-classes
+  [f coll]
+  (set (map set (vals (group-by f coll)))))
