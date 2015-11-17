@@ -673,3 +673,10 @@
                 matrix' (assoc matrix i (assoc (nth matrix i) j new-cell))]
             (recur matrix' (rest indeces)))
           (last (last matrix)))))))
+
+(defn into-camel-case
+  [string]
+  (apply str (reduce
+              (fn [a b]
+                (concat a (conj (rest b) (Character/toUpperCase (first b)))))
+              (map #(remove #{\-} %) (re-seq #"\w+-|\w+" string)))))
