@@ -647,3 +647,29 @@
   (reduce (fn [a b]
             (first (drop-while #(or (not= 0 (rem % a))
                                     (not= 0 (rem % b))) (iterate (partial + a) a)))) ns))
+
+;;http://people.cs.pitt.edu/~kirk/cs1501/Pruhs/Fall2006/Assignments/editdistance/Levenshtein%20Distance.htm
+(defn levenshtein
+  "Uses a matrix to compute the levenshtein distance of two sequence"
+  [a b]
+  (let [n (count a) m (count b) cell (fn [m i j] (nth (nth m i) j))]
+    (if (some zero? (list n m))
+      (max n m)
+      (loop [matrix (into
+                     [(into [] (range 0 (inc n)))]
+                     (for [j (range 1 (inc m))]
+                       (into [j] (repeat n 0))))
+             indeces (for [j (range 1 (inc n))
+                           i (range 1 (inc m))]
+                       (list i j))]
+        (if (seq indeces) 
+          (let [i (ffirst indeces)
+                j (second (first indeces))
+                new-cell (min
+                          (inc (cell matrix (dec i) j))
+                          (inc (cell matrix i (dec j)))
+                          (+ (cell matrix (dec i) (dec j))
+                             (if (= (nth a (dec j)) (nth b (dec i))) 0 1)))
+                matrix' (assoc matrix i (assoc (nth matrix i) j new-cell))]
+            (recur matrix' (rest indeces)))
+          (last (last matrix)))))))
