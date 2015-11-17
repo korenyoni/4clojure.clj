@@ -633,3 +633,17 @@
 (defn product-digits
   [a b]
   (mapv #(- (int %) 48) ((comp str *) a b)))
+
+(defn lcm
+  [& ns]
+  (letfn [(prime-factors [n]
+            (filter
+             #(and (zero? (rem n %)) (every? (fn [x] (not= 0 (rem % x))) (range 2 %)))
+             (range 2 (inc n))))]
+    (apply * (set (prime-factors (reduce * ns))))))
+
+(defn lcm
+  [& ns]
+  (reduce (fn [a b]
+            (first (drop-while #(or (not= 0 (rem % a))
+                                    (not= 0 (rem % b))) (iterate (partial + a) a)))) ns))
