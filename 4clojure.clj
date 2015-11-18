@@ -680,3 +680,12 @@
               (fn [a b]
                 (concat a (conj (rest b) (Character/toUpperCase (first b)))))
               (map #(remove #{\-} %) (re-seq #"\w+-|\w+" string)))))
+
+(defn k-combinations
+  [k s]
+  (loop [sets (map #(set (list %)) s)]
+    (if (every? #{k} (map count sets))
+      (set sets)
+      (recur (for [x sets y s
+                   :when (not (x y))]
+               (conj x y))))))
