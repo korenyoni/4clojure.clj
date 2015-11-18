@@ -683,7 +683,7 @@
 
 (defn k-combinations
   [k s]
-  (loop [sets (map #(hash-set %) s)]
+  (loop [sets (map hash-set s)]
     (if (every? #{k} (map count sets))
       (set sets)
       (recur (for [x sets y s
