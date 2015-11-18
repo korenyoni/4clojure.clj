@@ -705,3 +705,16 @@
       (assoc %1 %2 [])
       (assoc %1 (first (last %1)) (conj (second (last %1)) %2)))
    (cons (sorted-map) v)))
+
+(defn number-maze
+  [a b]
+  (letfn [(queue-fn [i n]
+            (vector n (* 2 n) (/ n 2) (+ 2 n) (inc i)))]
+    (loop [queue (vector (queue-fn 0 a))]
+      (let [current (first queue)]
+        (if (= b (current 0))
+          (current 4)
+          (recur (into (subvec queue 1)
+                       (map
+                        (partial queue-fn (current 4))
+                        (sort (remove ratio? (subvec current 1 4)))))))))))
