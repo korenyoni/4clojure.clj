@@ -689,3 +689,11 @@
       (recur (for [x sets y s
                    :when (not (x y))]
                (conj x y))))))
+
+(defn to-roman
+  [i]
+  (let [val-map (sorted-map 1000 "M" 500 "D" 100 "C" 50 "L" 10 "X" 5 "V" 1 "I"
+                            900 "CM" 400 "CD" 90 "XC" 40 "XL" 9 "IX" 4 "IV")
+        result (first (drop-while #(> % i) ((comp reverse keys) val-map)))]
+    (if result
+      (str (val-map result) (to-roman (- i result))))))
