@@ -697,3 +697,11 @@
         result (first (drop-while #(> % i) ((comp reverse keys) val-map)))]
     (if result
       (str (val-map result) (to-roman (- i result))))))
+
+(defn v-to-map
+  [v]
+  (reduce
+   #(if (keyword? %2)
+      (assoc %1 %2 [])
+      (assoc %1 (first (last %1)) (conj (second (last %1)) %2)))
+   (cons (sorted-map) v)))
