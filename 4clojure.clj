@@ -723,3 +723,15 @@
 (defn simple-closure
   [x]
   (fn [n] (nth (iterate (partial * n) 1) x)))
+
+"Lazily searches all the colls for the smallest number appearing in all of them"
+(defn lazy-search
+  [coll & colls]
+  (letfn [(search [sets remaining-colls]
+            (if-let [result (first (apply clojure.set/intersection sets))]
+              result
+              (recur (map #(conj %1 (first %2)) sets remaining-colls)
+                     (map #(drop-while
+                            (partial > (apply max (map first remaining-colls))) %)
+                            remaining-colls))))]
+    (search (map #(hash-set (first %)) (cons coll colls)) (cons coll colls))))
