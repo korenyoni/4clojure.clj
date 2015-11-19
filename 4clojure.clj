@@ -735,3 +735,9 @@
                             (partial > (apply max (map first remaining-colls))) %)
                             remaining-colls))))]
     (search (map #(hash-set (first %)) (cons coll colls)) (cons coll colls))))
+
+(defn pronounciations
+  [v]
+  (lazy-seq
+   (let [current (into [] (mapcat #(list (count %) (first %)) (partition-by identity v)))]
+     (cons current (pronounciations current)))))
