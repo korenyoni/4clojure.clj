@@ -718,3 +718,8 @@
                        (map
                         (partial queue-fn (current 4))
                         (sort (remove ratio? (subvec current 1 4)))))))))))
+
+"Returns an fn which computes x^n"
+(defn simple-closure
+  [x]
+  (fn [n] (nth (iterate (partial * n) 1) x)))
