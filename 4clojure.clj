@@ -762,3 +762,16 @@
         v (for [i (range 0 (count (first h)))] (map #(nth % i) h))]
     ((complement nil?)
      (some (set blanks) (mapcat #(partition-by (partial = \#) %) (concat v h))))))
+
+(defn sequs-horriblis
+  [n coll]
+  (letfn [(conj-not-empty [coll x] (if (seq x) (conj coll x) coll))]
+   ((fn f [remaining-n new-coll old-coll]
+     (let [e (first old-coll)
+           remaining-n' (if (number? e) (- remaining-n e) remaining-n)
+           old-coll' (rest old-coll)]
+       (cond (or (empty? old-coll) (> 0 remaining-n')) new-coll
+             (coll? e) (f (apply (partial - remaining-n') (flatten e))
+                          (conj-not-empty new-coll (f remaining-n' [] e))
+                          old-coll')
+             :else (f remaining-n' (conj new-coll e) old-coll')))) n [] coll)))
