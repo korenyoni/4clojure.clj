@@ -741,3 +741,24 @@
   (lazy-seq
    (let [current (into [] (mapcat #(list (count %) (first %)) (partition-by identity v)))]
      (cons current (pronounciations current)))))
+
+(defn cross-word-puzzle
+  [word puzzle]
+  (let [index-sets
+        (loop [acc (hash-set #{}) added acc]
+          (if-let [to-add
+                   (seq (for [subset added 
+                              e (range 0 (count word))
+                              :when (not (subset e))]
+                          (conj subset e)))]
+            (recur (into acc to-add) (set to-add))
+            (into acc added)))
+        blanks
+        (->>
+         (remove (hash-set (set (range 0 (count word))) #{}) index-sets)
+         (map #(interleave % (repeat \_)))
+         (map #(apply (partial assoc (into [] word)) %)))
+        h (map (partial remove #{\space}) puzzle)
+        v (for [i (range 0 (count (first h)))] (map #(nth % i) h))]
+    ((complement nil?)
+     (some (set blanks) (mapcat #(partition-by (partial = \#) %) (concat v h))))))
