@@ -775,3 +775,20 @@
                           (conj-not-empty new-coll (f remaining-n' [] e))
                           old-coll')
              :else (f remaining-n' (conj new-coll e) old-coll')))) n [] coll)))
+
+(defn data-dance
+  [& args]
+    (reify
+      Object
+      (toString [this]
+        (let [sorted (sort < args)]
+          (str (apply str (interleave (drop-last sorted) (repeat ", ")))
+               (last sorted))))
+      clojure.lang.Seqable
+      (seq [this]
+        (loop [seen (hash-set) built (list) rem-coll args]
+          (cond (empty? rem-coll) (seq (reverse built))
+                (seen (first rem-coll)) (recur seen built (rest rem-coll))
+                :else (recur (conj seen (first rem-coll))
+                             (conj built (first rem-coll))
+                             (rest rem-coll)))))))
