@@ -782,8 +782,7 @@
       Object
       (toString [this]
         (let [sorted (sort < args)]
-          (str (apply str (interleave (drop-last sorted) (repeat ", ")))
-               (last sorted))))
+          (str (apply str (interpose ", " sorted)))))
       clojure.lang.Seqable
       (seq [this]
         (loop [seen (hash-set) built (list) rem-coll args]
