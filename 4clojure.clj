@@ -791,3 +791,12 @@
                 :else (recur (conj seen (first rem-coll))
                              (conj built (first rem-coll))
                              (rest rem-coll)))))))
+
+(defn global-take-while
+  [n predicate coll]
+  (let [n' (if (predicate (first coll)) (dec n) n)]
+    (if (> n' 0)
+      (lazy-seq
+       (cons
+        (first coll)
+        (global-take-while n' predicate (rest coll)))))))
