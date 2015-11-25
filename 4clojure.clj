@@ -800,3 +800,11 @@
        (cons
         (first coll)
         (global-take-while n' predicate (rest coll)))))))
+
+(defn number-balanced?
+  [n]
+  (let [s (str n)
+        ls-halve (/ (count s) 2)
+        l (subs s 0 ls-halve)
+        r (subs (clojure.string/reverse s) 0 ls-halve)]
+   (apply = (map (comp #(apply + %) #(map int %)) (list l r)))))
