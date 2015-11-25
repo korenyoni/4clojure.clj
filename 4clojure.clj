@@ -808,3 +808,17 @@
         l (subs s 0 ls-halve)
         r (subs (clojure.string/reverse s) 0 ls-halve)]
    (apply = (map (comp #(apply + %) #(map int %)) (list l r)))))
+
+(defn balanced-prime?
+  [n]
+  (let [primes
+        (cons 2 ((fn p [x]
+                   (lazy-seq
+                    (if (some #(zero? (mod x %)) (range 2 x))
+                      (p (+ 2 x))
+                      (cons x (p (+ 2 x)))))) 3))
+        triple (loop [rem-coll primes]
+                 (if (<= n (fnext rem-coll))
+                   (take 3 rem-coll)
+                   (recur (next rem-coll))))]
+    (= n (second triple) (/ (+ (first triple) (last triple)) 2))))
