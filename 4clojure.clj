@@ -895,3 +895,9 @@
       (apply (ops f) (map #(cond (symbol? %) (var-map %)
                                  (coll? %) ((universal-computation %) var-map)
                                  :else %) (rest exp))))))
+
+;; I've solved this type of problem in my original power-set problem
+;; This is just a quick delegation to a Java function
+(defn read-binary
+  [binary-string]
+  (#(Long/parseLong % 2) binary-string))
