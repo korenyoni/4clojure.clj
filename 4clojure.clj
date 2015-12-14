@@ -879,7 +879,3 @@
                  f (fn [tuple-val] (if-let [idx-key-val (idx-keys tuple-val)] idx-key-val tuple-val))]
              (mapv f (second %))))
      set)))
-
-(def ttt-board [[:o :e :e] 
-                [:o :x :o] 
-                [:x :x :e]])
