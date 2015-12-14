@@ -809,6 +809,7 @@
         r (subs (clojure.string/reverse s) 0 ls-halve)]
    (apply = (map (comp #(apply + %) #(map int %)) (list l r)))))
 
+;; problem 116
 (defn balanced-prime?
   [n]
   (let [primes
@@ -822,3 +823,29 @@
                    (take 3 rem-coll)
                    (recur (next rem-coll))))]
     (= n (second triple) (/ (+ (first triple) (last triple)) 2))))
+
+;; problem 117
+;; for science!
+(defn path-possible?
+  [maze]
+  (let [indeces (for [y (range 0 (count maze))
+                      x (range 0 (count (first maze)))
+                      :let [value (nth (nth maze y) x)]
+                      :when (not= value \#)]
+                  (vector x y value))
+        start (butlast (first (filter #(= \M (last %)) indeces)))
+        end (butlast (first (filter #(= \C (last %)) indeces)))
+        steps (list [0 1] [1 0] [0 -1] [-1 0])
+        next-steps (fn [pos-col rem-indeces]
+                     (for [[ix iy] pos-col
+                           [sx sy] steps
+                           :let [new-pos (list (+ ix sx) (+ iy sy))]
+                           :when (rem-indeces new-pos)]
+                           new-pos))]
+    (loop [pos-col (list start)
+           rem-indeces (set (remove #{start} (map butlast indeces)))]
+      (let [rem-indeces' (apply disj rem-indeces pos-col)
+            pos-col' (next-steps pos-col rem-indeces')]
+        (if (seq pos-col')
+          (recur pos-col' rem-indeces')
+          (contains? (set pos-col) end))))))
