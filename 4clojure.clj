@@ -886,3 +886,12 @@
    (filter
     (fn [n] (< n (reduce + (map #(apply * (repeat 2 (- 48 (int %)))) (.toString n)))))
     coll)))
+
+(defn universal-computation
+  [exp]
+  (let [f (symbol (first exp))
+        ops {'+ + '* * '- - '/ /}]
+    (fn [var-map]
+      (apply (ops f) (map #(cond (symbol? %) (var-map %)
+                                 (coll? %) ((universal-computation %) var-map)
+                                 :else %) (rest exp))))))
