@@ -860,3 +860,26 @@
   [f coll]
   (if (seq coll)
     (lazy-seq (cons (f (first coll)) (my-map f (rest coll))))))
+
+;; problem 119
+;; win at tic-tac-toe
+(defn winning-moves
+  [player board]
+  (let [i-range (range 0 (count board))
+        h (for [i i-range] (vector (nth board i) [i :i]))
+        v (for [i i-range] (vector (map #(nth % i) board) [:i i]))
+        diag-tl-br (vector (for [i i-range] (nth (nth board i) i)) [:i :i])
+        diag-bl-tr (vector (for [i (reverse i-range)] (nth (nth board i) (- (last i-range) i))) [:im :i])
+        opponent (first (disj #{:x :o} player))]
+    (->> ;; :i means the index of :e, :im means the maximum index minus the index of :e
+     (remove #(or ((set (first %)) opponent)
+                  (> (count (filter (partial = :e) (first %))) 1)) (concat h v [diag-tl-br] [diag-bl-tr]))
+     (map #(let [move-idx (.indexOf (first %) :e)
+                 idx-keys {:i move-idx :im (- (last i-range) move-idx)}
+                 f (fn [tuple-val] (if-let [idx-key-val (idx-keys tuple-val)] idx-key-val tuple-val))]
+             (mapv f (second %))))
+     set)))
+
+(def ttt-board [[:o :e :e] 
+                [:o :x :o] 
+                [:x :x :e]])
