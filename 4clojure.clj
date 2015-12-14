@@ -880,6 +880,7 @@
              (mapv f (second %))))
      set)))
 
+;; problem 120
 (defn less-than-square-sum-digits
   [coll]
   (count
@@ -887,6 +888,7 @@
     (fn [n] (< n (reduce + (map #(apply * (repeat 2 (- 48 (int %)))) (.toString n)))))
     coll)))
 
+;; problem 121
 (defn universal-computation
   [exp]
   (let [f (symbol (first exp))
@@ -896,6 +898,7 @@
                                  (coll? %) ((universal-computation %) var-map)
                                  :else %) (rest exp))))))
 
+;; problem 122
 ;; I've solved this type of problem in my original power-set problem
 ;; This is just a quick delegation to a Java function
 (defn read-binary
