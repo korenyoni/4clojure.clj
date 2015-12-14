@@ -826,6 +826,10 @@
 
 ;; problem 117
 ;; for science!
+;; loops through every combination of steps going up, down, left, right, from the start position
+;; removes used steps, and does not consider steps either untraversable or not on the board for
+;; the next iteration. When no more steps are possible, sees if the end position is present 
+;; in the previous iteration's queue of available positions to traverse from.
 (defn path-possible?
   [maze]
   (let [indeces (for [y (range 0 (count maze))
