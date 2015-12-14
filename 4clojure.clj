@@ -879,3 +879,10 @@
                  f (fn [tuple-val] (if-let [idx-key-val (idx-keys tuple-val)] idx-key-val tuple-val))]
              (mapv f (second %))))
      set)))
+
+(defn less-than-square-sum-digits
+  [coll]
+  (count
+   (filter
+    (fn [n] (< n (reduce + (map #(apply * (repeat 2 (- 48 (int %)))) (.toString n)))))
+    coll)))
