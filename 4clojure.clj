@@ -853,3 +853,10 @@
         (if (seq pos-col')
           (recur pos-col' rem-indeces')
           (contains? (set pos-col) end))))))
+
+;; problem 118
+;; must be lazy
+(defn my-map
+  [f coll]
+  (if (seq coll)
+    (lazy-seq (cons (f (first coll)) (my-map f (rest coll))))))
