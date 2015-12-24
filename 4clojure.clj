@@ -854,6 +854,13 @@
           (recur pos-col' rem-indeces')
           (contains? (set pos-col) end))))))
 
+;; example maze
+(def maze ["######"
+           "# #  #"
+           "# #  #"
+           "#M# C#"
+           "######"])
+
 ;; problem 118
 ;; must be lazy
 (defn my-map
@@ -904,3 +911,46 @@
 (defn read-binary
   [binary-string]
   (#(Long/parseLong % 2) binary-string))
+
+;; problem 124
+(defn analyze-reversi
+  [board piece [f j]]
+  (let [h (count board)
+        w (count (first board))
+        call-in (fn [[y x]] (nth (nth board y) x))
+        horiz (fn [[y x]] (for [x' (range x w)] (call-in [y x'])))
+        vert (fn [[y x]] (for [y' (range (inc y))] (call-in [y' x])))
+        diag (fn [[y x]] (for [x' (range x h)
+                                     :let [y' (- y (- x' x))]
+                                     :while (>= h y' 0)]
+                                 (call-in [y' x'])))
+        regex (re-pattern (str piece (if (= 'w piece) 'b 'w) \+ 'e))
+        two-moves (fn [[y x] pieces] (apply str pieces))]
+    (two-moves [2 1] (vert [2 1]))
+    (diag [f j])))
+
+(def board '[[e e e e]
+             [e w b e]
+             [w w w e]
+             [e e e e]])
+
+;; problem 124
+(defn analyze-reversi
+  [board piece]
+  (let [h (count board)
+        w (count (first board))
+        opponent (if (= 'w piece) 'b 'w)
+        directions [[0 1] [0 -1] [-1 0] [1 0] [1 1] [1 -1] [-1 1] [-1 -1]]
+        call-in (fn [[y x]] (nth (nth board y) x))]
+    (into {} (for [y (range h)
+                   x (range w)
+                   d directions
+                   :let [p (call-in [y x])] :when (= p piece)]
+               (loop [pos [y x] iter 0 pieces #{}]
+                 (let [new-pos [(+ (pos 0) (d 0)) (+ (pos 1) (d 1))]
+                       in-bounds? (and (> h (pos 0) -1) (> w (pos 1) -1))]
+                   (if (or (= pos [y x])
+                           (and in-bounds? (= opponent (call-in pos))))
+                     (recur new-pos (inc iter) (conj pieces pos))
+                     (if (and in-bounds? (= 'e (call-in pos)) (> iter 1))
+                       [pos (disj pieces pos [y x])]))))))))
