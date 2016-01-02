@@ -929,11 +929,6 @@
     (two-moves [2 1] (vert [2 1]))
     (diag [f j])))
 
-(def board '[[e e e e]
-             [e w b e]
-             [w w w e]
-             [e e e e]])
-
 ;; problem 124
 (defn analyze-reversi
   [board piece]
@@ -954,3 +949,7 @@
                      (recur new-pos (inc iter) (conj pieces pos))
                      (if (and in-bounds? (= 'e (call-in pos)) (> iter 1))
                        [pos (disj pieces pos [y x])]))))))))
+
+(defn gus []
+  (let [c "(defn gus [] (let [c \""]
+    (str c c)))
