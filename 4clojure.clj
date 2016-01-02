@@ -949,3 +949,7 @@
                      (recur new-pos (inc iter) (conj pieces pos))
                      (if (and in-bounds? (= 'e (call-in pos)) (> iter 1))
                        [pos (disj pieces pos [y x])]))))))))
+
+(defn gus []
+  (let [c ["(defn gus [] " "(let [c " :string "] " "(apply str (assoc c 2 (str c)))))"]]
+    (apply str (assoc c 2 (str c)))))
